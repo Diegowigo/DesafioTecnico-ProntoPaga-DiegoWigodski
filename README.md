@@ -26,6 +26,10 @@ Solución al desafío técnico para el proceso de selección de **ProntoPaga / Y
 
 ```bash
 cd backend
+# 1. Copiar variables de entorno desde .env.example
+cp .env.example .env
+
+# 2. Instalar dependencias e iniciar
 npm install
 npm run dev
 ```
@@ -34,11 +38,15 @@ npm run dev
 
 ```bash
 cd frontend
+# 1. Copiar variables de entorno desde .env.example (o crear .env / .env.local)
+cp .env.example .env.local
+
+# 2. Instalar dependencias e iniciar
 npm install
 npm run dev
 ```
 
-Luego abre **http://localhost:3000** en el navegador. El frontend se conecta al backend en `http://localhost:4000` (configurable en `frontend/.env.local`).
+Luego abre **http://localhost:3000** en el navegador. El frontend se conecta al backend en `http://localhost:4000` (configurado en `frontend/.env.local`).
 
 ---
 
@@ -158,8 +166,10 @@ npm test
 
 ## 🔐 Variables de Entorno
 
-Archivo `backend/.env` (copia de `backend/.env.example`):
+Ambos proyectos requieren un archivo de variables de entorno para su correcto funcionamiento. Las plantillas y credenciales de configuración por defecto se encuentran documentadas en sus respectivos archivos `.env.example`:
 
+### Backend (`backend/.env`)
+Copiar desde `backend/.env.example`:
 ```env
 PORT=4000
 NODE_ENV=development
@@ -167,8 +177,8 @@ JWT_SECRET=jl3J84zMXWa050MixkrXSWowx98Hrdq0
 JWT_EXPIRES_IN=1h
 ```
 
-Archivo `frontend/.env.local`:
-
+### Frontend (`frontend/.env.local` o `frontend/.env`)
+Copiar desde `frontend/.env.example`:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:4000
 ```
