@@ -123,12 +123,12 @@ npm test
 ## 📡 Documentación de Endpoints
 
 ### 1. `POST /login`
-Inicia sesión con credenciales mock y entrega el JWT firmado.
+Inicia sesión con credenciales mock o con **cualquier RUT chileno válido**. Si el RUT no está en la base mock, consulta en tiempo real `https://www.nombrerutyfirma.com/rut` para extraer su nombre real, reordenándolo automáticamente al formato **`Nombre ApellidoPaterno ApellidoMaterno`**.
 
 **Request Body (JSON):**
 ```json
 {
-  "rut": "11.111.111-1",
+  "rut": "17.702.728-6",
   "password": "password123"
 }
 ```
@@ -138,10 +138,10 @@ Inicia sesión con credenciales mock y entrega el JWT firmado.
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
-    "id": "user-001",
-    "name": "Juan Pérez",
+    "id": "user-177027286",
+    "name": "Diego Wigodski Carafi",
     "role": "user",
-    "rut": "11.111.111-1"
+    "rut": "17.702.728-6"
   }
 }
 ```
@@ -149,9 +149,9 @@ Inicia sesión con credenciales mock y entrega el JWT firmado.
 > **Payload decodificado del JWT (User):**
 > ```json
 > {
->   "sub": "user-001",
+>   "sub": "user-177027286",
 >   "role": "user",
->   "rut": "11.111.111-1",
+>   "rut": "17.702.728-6",
 >   "iat": 1741200000,
 >   "exp": 1741203600
 > }
@@ -168,8 +168,8 @@ Retorna el score crediticio determinista para el RUT consultado.
 **Respuesta Exitosa (200 OK):**
 ```json
 {
-  "rut": "11.111.111-1",
-  "score": 73,
+  "rut": "17.702.728-6",
+  "score": 64,
   "fecha": "2026-09-05T22:20:00.000Z"
 }
 ```
@@ -178,3 +178,26 @@ Retorna el score crediticio determinista para el RUT consultado.
 - `400 Bad Request`: Si el RUT en la URL no es válido o su dígito verificador es incorrecto.
 - `401 Unauthorized`: Si el token no se envió, es inválido o ha expirado.
 - `403 Forbidden`: Si un usuario con rol `user` intenta consultar un RUT que no le pertenece.
+
+---
+
+### 3. `GET /person/:rut`
+Consulta pública de datos personales asociados al RUT mediante la integración de **NombreRutYFirma**.
+
+**Parámetros:**
+- `:rut` (ej: `17.702.728-6` o `17702728-6`)
+
+**Respuesta Exitosa (200 OK):**
+```json
+{
+  "rut": "17.702.728-6",
+  "name": "Diego Wigodski Carafi",
+  "rawName": "Wigodski Carafi Diego",
+  "sex": "VAR",
+  "address": "Sin Datos",
+  "city": "Plaza ñuñoa",
+  "found": true,
+  "source": "nombrerutyfirma.com"
+}
+```
+
