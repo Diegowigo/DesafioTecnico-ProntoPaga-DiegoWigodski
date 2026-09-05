@@ -22,31 +22,46 @@ Solución al desafío técnico para el proceso de selección de **ProntoPaga / Y
 ### Prerrequisitos
 - Node.js >= 18.x · npm >= 9.x
 
-### Backend (Puerto 4000)
+### Configurar Variables de Entorno (Primera vez)
+Copiar los archivos `.env.example` en cada módulo:
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
+```
 
+---
+
+### Opción A: Iniciar Todo en Una Sola Terminal (Recomendado)
+
+Desde la raíz del monorepo:
+
+```bash
+# 1. Instalar dependencias de todo el proyecto (raíz, backend y frontend)
+npm run install:all
+
+# 2. Iniciar Backend (:4000) y Frontend (:3000) simultáneamente
+npm run dev
+```
+
+---
+
+### Opción B: Iniciar en Terminales Separadas
+
+**Terminal 1 — Backend (Puerto 4000):**
 ```bash
 cd backend
-# 1. Copiar variables de entorno desde .env.example
-cp .env.example .env
-
-# 2. Instalar dependencias e iniciar
 npm install
 npm run dev
 ```
 
-### Frontend (Puerto 3000)
-
+**Terminal 2 — Frontend (Puerto 3000):**
 ```bash
 cd frontend
-# 1. Copiar variables de entorno desde .env.example (o crear .env / .env.local)
-cp .env.example .env.local
-
-# 2. Instalar dependencias e iniciar
 npm install
 npm run dev
 ```
 
-Luego abre **http://localhost:3000** en el navegador. El frontend se conecta al backend en `http://localhost:4000` (configurado en `frontend/.env.local`).
+Una vez iniciados, abre **http://localhost:3000** en tu navegador.
 
 ---
 
