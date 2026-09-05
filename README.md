@@ -1,203 +1,180 @@
-# Desafío Técnico - Consulta de Riesgo Financiero (Fintech ProntoPaga / YOL1)
+# Desafío Técnico — Consulta de Riesgo Financiero (ProntoPaga / YOL1)
 
-Solución al desafío técnico para el proceso de selección de **ProntoPaga / YOL1**. Este sistema implementa un MVP seguro para la Consulta de Score Crediticio según RUT chileno, con autenticación basada en JWT y control de acceso basado en roles (`admin` y `user`).
+Solución al desafío técnico para el proceso de selección de **ProntoPaga / YOL1**. Implementa un MVP completo de **Consulta de Score Crediticio** por RUT chileno, con autenticación JWT y control de acceso basado en roles (`admin` / `user`).
 
 ---
 
 ## 🛠 Tecnologías Utilizadas
 
-- **Backend**: Node.js, Express, TypeScript.
-- **Seguridad**: JSON Web Tokens (`jsonwebtoken`), Helmet, CORS, Hashing criptográfico (`crypto`).
-- **Validación**: Algoritmo Módulo 11 oficial para RUT chileno, tipado estricto con TypeScript.
-- **Testing**: Jest, Supertest, ts-jest (26 tests unitarios y de integración).
-
----
-
-## 📁 Estructura del Proyecto
-
-```
-Desafío Técnico - ProntoPaga/
-├── backend/
-│   ├── src/
-│   │   ├── config/env.ts              # Variables de entorno tipadas
-│   │   ├── controllers/               # Controladores HTTP (Auth y Score)
-│   │   ├── data/mockUsers.ts          # Datos mockeados de usuarios y admin
-│   │   ├── middlewares/               # Middlewares (Auth JWT, Roles, Validador RUT, Errores)
-│   │   ├── routes/                    # Definición de rutas (/login, /score/:rut, /health)
-│   │   ├── services/                  # Lógica de negocio (JWT condicional y Score determinista)
-│   │   ├── types/index.ts             # Tipos e interfaces TypeScript
-│   │   ├── utils/                     # Algoritmo Módulo 11 y cálculo SHA-256 de score
-│   │   ├── app.ts                     # Configuración de Express
-│   │   └── server.ts                  # Inicialización del servidor HTTP
-│   ├── tests/                         # Suite de pruebas automatizadas
-│   │   ├── auth.test.ts
-│   │   ├── score.test.ts
-│   │   ├── scoreCalculator.test.ts
-│   │   └── rut.test.ts
-│   ├── .env.example
-│   ├── .env
-│   ├── package.json
-│   └── tsconfig.json
-├── frontend/                          # Aplicación Frontend (Next.js / React)
-├── README.md                          # Instrucciones del proyecto
-├── ai_interactions.md                 # Registro de transparencia de IA
-└── Desafío TécnicoV3.pdf             # Enunciado original del desafío
-```
+| Capa | Stack |
+| :--- | :--- |
+| **Backend** | Node.js, Express, TypeScript |
+| **Seguridad** | JSON Web Tokens (jsonwebtoken), Helmet, CORS, SHA-256 (crypto) |
+| **Validación** | Algoritmo Módulo 11 (RUT chileno), tipado estricto TypeScript |
+| **Testing** | Jest, Supertest, ts-jest — 32 tests (100% pasando) |
+| **Frontend** | Next.js (React) + TypeScript, App Router |
+| **Estilos** | Vanilla CSS + CSS Modules, design system propio |
 
 ---
 
 ## 🚀 Puesta en Marcha en Local
 
 ### Prerrequisitos
-- Node.js >= 18.x
-- npm >= 9.x
+- Node.js >= 18.x · npm >= 9.x
 
-### 1. Backend
+### Backend (Puerto 4000)
 
 ```bash
-# 1. Navegar al directorio del backend
 cd backend
-
-# 2. Instalar dependencias
 npm install
-
-# 3. Configurar variables de entorno
-# Se incluye un archivo .env listo para desarrollo, o puedes copiarlo de .env.example:
-cp .env.example .env
-
-# 4. Iniciar en modo desarrollo
 npm run dev
-
-# 5. Compilar para producción
-npm run build
-
-# 6. Iniciar en producción
-npm start
 ```
 
-El servidor iniciará en: `http://localhost:4000`
+### Frontend (Puerto 3000)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Luego abre **http://localhost:3000** en el navegador. El frontend se conecta al backend en `http://localhost:4000` (configurable en `frontend/.env.local`).
 
 ---
 
-## 🧪 Ejecución de Pruebas Automatizadas
+## 📁 Estructura del Proyecto
 
-El backend cuenta con una suite completa de pruebas unitarias y de integración que cubren el 100% de los flujos críticos exigidos:
+```
+Desafío Técnico - ProntoPaga/  (monorepo)
+├── .gitignore
+├── README.md
+├── ai_interactions.md          # Registro de transparencia IA
+│
+├── backend/
+│   ├── src/
+│   │   ├── config/             # Variables de entorno tipadas
+│   │   ├── controllers/        # Controladores HTTP
+│   │   ├── data/               # Usuarios mock
+│   │   ├── middlewares/        # JWT auth, roles, validación RUT, errores
+│   │   ├── routes/             # /login, /score/:rut, /person/:rut, /health
+│   │   ├── services/           # AuthService, ScoreService, NombreRutYFirmaService
+│   │   ├── types/              # Tipos e interfaces TypeScript
+│   │   └── utils/              # Módulo 11, SHA-256
+│   └── tests/                  # 32 tests unitarios e integración
+│
+└── frontend/
+    └── src/
+        ├── app/
+        │   ├── login/          # Pantalla de login
+        │   ├── dashboard/      # Consulta de score con gauge animado
+        │   └── globals.css     # Design system fintech
+        ├── components/         # Navbar, ScoreGauge, Toast
+        ├── context/            # AuthContext (JWT + localStorage)
+        ├── services/           # Cliente HTTP para la API
+        └── utils/              # Validación y formateo de RUT
+```
+
+---
+
+## 👥 Credenciales de Prueba
+
+| Rol | Nombre | RUT | Contraseña | Acceso |
+| :--- | :--- | :--- | :--- | :--- |
+| **user** | Juan Pérez | `11.111.111-1` | `password123` | Solo su propio RUT |
+| **user** | María González | `22.222.222-2` | `password123` | Solo su propio RUT |
+| **user** | Carlos Silva | `12.345.678-5` | `password123` | Solo su propio RUT |
+| **admin** | Administrador | `99.999.999-9` | `admin123` | Cualquier RUT |
+| **user dinámico** | Cualquier RUT chileno válido | Ej: `17.702.728-6` | Cualquier password | Su propio RUT (nombre extraído de NombreRutYFirma) |
+
+---
+
+## 📡 Endpoints de la API
+
+### `POST /login`
+
+Autentica con credenciales mock o **cualquier RUT chileno válido**. Si el RUT no existe en el mock, consulta `NombreRutYFirma` para obtener el nombre del titular.
+
+```json
+// Request
+{ "rut": "11.111.111-1", "password": "password123" }
+
+// Response 200 OK
+{
+  "token": "eyJhbGci...",
+  "user": { "id": "user-111111111", "name": "Juan Pérez", "role": "user", "rut": "11.111.111-1" }
+}
+```
+
+**JWT payload (rol `user`):** `{ sub, role, rut, iat, exp }`
+**JWT payload (rol `admin`):** `{ sub, role, iat, exp }` — sin `rut` por diseño.
+
+---
+
+### `GET /score/:rut`
+
+Retorna el score crediticio determinista del RUT. Requiere JWT.
+
+```
+Authorization: Bearer <token>
+```
+
+```json
+// Response 200 OK
+{ "rut": "11.111.111-1", "score": 72, "fecha": "2026-09-05T22:20:00.000Z" }
+```
+
+| Código | Motivo |
+| :--- | :--- |
+| `400` | RUT con dígito verificador inválido |
+| `401` | Token ausente, inválido o expirado |
+| `403` | Usuario `user` intentando consultar un RUT ajeno |
+
+---
+
+### `GET /person/:rut`
+
+Consulta pública de datos del titular (nombre, comuna, etc.) desde NombreRutYFirma. No requiere autenticación.
+
+---
+
+### `GET /health`
+
+```json
+{ "status": "ok", "service": "ProntoPaga Score API", "timestamp": "..." }
+```
+
+---
+
+## 🧪 Pruebas Automatizadas
 
 ```bash
 cd backend
 npm test
 ```
 
-### Escenarios evaluados (26 tests pasando):
-1. **Cálculo Determinista de Score (`scoreCalculator.test.ts`)**:
-   - Mismo RUT devuelve el mismo score a lo largo de cientos de llamadas.
-   - Variabilidad de scores en el rango $[0, 100]$ para diferentes RUTs.
-   - Invarianza ante formatos con o sin puntos, guiones o espacios.
-2. **Validación de RUT Chileno (`rut.test.ts`)**:
-   - Verificación de dígito verificador mediante algoritmo oficial Módulo 11.
-   - Soporte para RUTs terminados en dígito verificador `K` / `k`.
-   - Detección de RUTs inválidos o mal formados.
-3. **Autenticación (`auth.test.ts`)**:
-   - `POST /login` con credenciales de usuario: Retorna JWT con `sub`, `role: 'user'` y `rut`.
-   - `POST /login` con credenciales de administrador: Retorna JWT con `sub` y `role: 'admin'` (excluye `rut` del payload según requerimiento).
-   - Manejo de credenciales inválidas y respuestas con código 401.
-4. **Control de Acceso y Score (`score.test.ts`)**:
-   - Rechazo de peticiones sin token (401) o con token corrupto / expirado (401).
-   - Rol `user`: Solo puede consultar su propio RUT (200 OK); cualquier intento de consultar otro RUT es denegado (403 Forbidden).
-   - Rol `admin`: Puede consultar el score de cualquier RUT válido (200 OK).
-   - Validación sintáctica de RUT en parámetro de ruta (400 Bad Request si el DV es incorrecto).
+32 tests en 5 suites cubriendo: validación de RUT (Módulo 11), determinismo del score (SHA-256), autenticación JWT, autorización por roles y parseo de datos externos.
 
 ---
 
-## 👥 Credenciales de Prueba (Mock Users)
+## 🔐 Variables de Entorno
 
-| Rol | Nombre | RUT | Usuario | Contraseña | Permisos |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **User** | Juan Pérez | `11.111.111-1` | - | `password123` | Consulta solo su RUT (`11.111.111-1`) |
-| **User** | María González | `22.222.222-2` | - | `password123` | Consulta solo su RUT (`22.222.222-2`) |
-| **User** | Carlos Silva | `12.345.678-5` | - | `password123` | Consulta solo su RUT (`12.345.678-5`) |
-| **Admin** | Administrador Fintech | `99.999.999-9` | `admin-001` | `admin123` | Consulta **cualquier** RUT |
+Archivo `backend/.env` (copia de `backend/.env.example`):
+
+```env
+PORT=4000
+NODE_ENV=development
+JWT_SECRET=jl3J84zMXWa050MixkrXSWowx98Hrdq0
+JWT_EXPIRES_IN=1h
+```
+
+Archivo `frontend/.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000
+```
 
 ---
 
-## 📡 Documentación de Endpoints
+## 🤖 Uso de Inteligencia Artificial
 
-### 1. `POST /login`
-Inicia sesión con credenciales mock o con **cualquier RUT chileno válido**. Si el RUT no está en la base mock, consulta en tiempo real `https://www.nombrerutyfirma.com/rut` para extraer su nombre real, reordenándolo automáticamente al formato **`Nombre ApellidoPaterno ApellidoMaterno`**.
-
-**Request Body (JSON):**
-```json
-{
-  "rut": "17.702.728-6",
-  "password": "password123"
-}
-```
-
-**Respuesta Exitosa (200 OK) - Rol User:**
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "user-177027286",
-    "name": "Diego Wigodski Carafi",
-    "role": "user",
-    "rut": "17.702.728-6"
-  }
-}
-```
-
-> **Payload decodificado del JWT (User):**
-> ```json
-> {
->   "sub": "user-177027286",
->   "role": "user",
->   "rut": "17.702.728-6",
->   "iat": 1741200000,
->   "exp": 1741203600
-> }
-> ```
-
----
-
-### 2. `GET /score/:rut`
-Retorna el score crediticio determinista para el RUT consultado.
-
-**Headers requeridos:**
-`Authorization: Bearer <token_jwt>`
-
-**Respuesta Exitosa (200 OK):**
-```json
-{
-  "rut": "17.702.728-6",
-  "score": 64,
-  "fecha": "2026-09-05T22:20:00.000Z"
-}
-```
-
-**Respuestas de Error:**
-- `400 Bad Request`: Si el RUT en la URL no es válido o su dígito verificador es incorrecto.
-- `401 Unauthorized`: Si el token no se envió, es inválido o ha expirado.
-- `403 Forbidden`: Si un usuario con rol `user` intenta consultar un RUT que no le pertenece.
-
----
-
-### 3. `GET /person/:rut`
-Consulta pública de datos personales asociados al RUT mediante la integración de **NombreRutYFirma**.
-
-**Parámetros:**
-- `:rut` (ej: `17.702.728-6` o `17702728-6`)
-
-**Respuesta Exitosa (200 OK):**
-```json
-{
-  "rut": "17.702.728-6",
-  "name": "Diego Wigodski Carafi",
-  "rawName": "Wigodski Carafi Diego",
-  "sex": "VAR",
-  "address": "Sin Datos",
-  "city": "Plaza ñuñoa",
-  "found": true,
-  "source": "nombrerutyfirma.com"
-}
-```
-
+Se utilizaron herramientas de IA como apoyo en el desarrollo. Detalle completo en [`ai_interactions.md`](./ai_interactions.md), incluyendo qué herramientas se usaron y qué partes del código asistieron, según lo solicitado en las bases del desafío.
