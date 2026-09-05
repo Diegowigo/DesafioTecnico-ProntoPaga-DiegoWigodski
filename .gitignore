@@ -9,6 +9,7 @@ build/
 out/
 .next/
 .tsbuildinfo
+next-env.d.ts
 
 # Environment variables
 .env
@@ -53,3 +54,6 @@ desktop.ini
 .parcel-cache/
 .turbo/
 .vercel
+
+# Frontend .gitignore (duplicado de raíz)
+frontend/.gitignore
