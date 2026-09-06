@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   description:
     'Plataforma de consulta de riesgo financiero con autenticación JWT y control de acceso por roles. Desafío Técnico ProntoPaga.',
   robots: 'noindex,nofollow',
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

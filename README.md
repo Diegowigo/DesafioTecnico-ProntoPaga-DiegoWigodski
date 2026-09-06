@@ -77,13 +77,13 @@ Desafío Técnico - ProntoPaga/  (monorepo)
 │   ├── src/
 │   │   ├── config/             # Variables de entorno tipadas
 │   │   ├── controllers/        # Controladores HTTP
-│   │   ├── data/               # Usuarios mock
+│   │   ├── data/               # Base de datos de usuarios mock
 │   │   ├── middlewares/        # JWT auth, roles, validación RUT, errores
 │   │   ├── routes/             # /login, /score/:rut, /person/:rut, /health
-│   │   ├── services/           # AuthService, ScoreService, NombreRutYFirmaService
+│   │   ├── services/           # AuthService, ScoreService
 │   │   ├── types/              # Tipos e interfaces TypeScript
 │   │   └── utils/              # Módulo 11, SHA-256
-│   └── tests/                  # 32 tests unitarios e integración
+│   └── tests/                  # Tests unitarios e integración
 │
 └── frontend/
     └── src/
@@ -106,8 +106,8 @@ Desafío Técnico - ProntoPaga/  (monorepo)
 | **user** | Juan Pérez | `11.111.111-1` | `password123` | Solo su propio RUT |
 | **user** | María González | `22.222.222-2` | `password123` | Solo su propio RUT |
 | **user** | Carlos Silva | `12.345.678-5` | `password123` | Solo su propio RUT |
+| **user** | Diego Wigodski | `17.702.728-6` | `password123` | Solo su propio RUT |
 | **admin** | Administrador | `99.999.999-9` | `admin123` | Cualquier RUT |
-| **user dinámico** | Cualquier RUT chileno válido | Ej: `17.702.728-6` | Cualquier password | Su propio RUT (nombre extraído de NombreRutYFirma) |
 
 ---
 
@@ -115,7 +115,7 @@ Desafío Técnico - ProntoPaga/  (monorepo)
 
 ### `POST /login`
 
-Autentica con credenciales mock o **cualquier RUT chileno válido**. Si el RUT no existe en el mock, consulta `NombreRutYFirma` para obtener el nombre del titular.
+Autentica con credenciales de la base de usuarios mock.
 
 ```json
 // Request
@@ -124,7 +124,7 @@ Autentica con credenciales mock o **cualquier RUT chileno válido**. Si el RUT n
 // Response 200 OK
 {
   "token": "eyJhbGci...",
-  "user": { "id": "user-111111111", "name": "Juan Pérez", "role": "user", "rut": "11.111.111-1" }
+  "user": { "id": "user-001", "name": "Juan Pérez", "role": "user", "rut": "11.111.111-1" }
 }
 ```
 
@@ -156,7 +156,7 @@ Authorization: Bearer <token>
 
 ### `GET /person/:rut`
 
-Consulta pública de datos del titular (nombre, comuna, etc.) desde NombreRutYFirma. No requiere autenticación.
+Consulta pública de datos del titular (nombre, rol) desde la base de usuarios mock. No requiere autenticación.
 
 ---
 
@@ -175,7 +175,7 @@ cd backend
 npm test
 ```
 
-32 tests en 5 suites cubriendo: validación de RUT (Módulo 11), determinismo del score (SHA-256), autenticación JWT, autorización por roles y parseo de datos externos.
+Tests unitarios e integración en suites Jest cubriendo: validación de RUT (Módulo 11), determinismo del score (SHA-256), autenticación JWT, autorización por roles y consulta de personas en base mock.
 
 ---
 

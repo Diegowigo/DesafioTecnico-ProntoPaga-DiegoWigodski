@@ -6,7 +6,7 @@ const router = Router();
 
 /**
  * GET /person/:rut
- * Endpoint para obtener el nombre y datos de una persona consultando NombreRutYFirma.
+ * Endpoint para obtener el nombre y datos de una persona desde la base de usuarios mock.
  */
 router.get('/person/:rut', validateRutParam, (req, res, next) => {
   rutController.getPersonByRut(req, res, next);

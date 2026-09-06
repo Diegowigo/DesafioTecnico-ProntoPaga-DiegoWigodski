@@ -56,7 +56,7 @@ export const apiService = {
   getScore: (rut: string, token: string): Promise<ScoreData> =>
     request<ScoreData>(`/score/${encodeURIComponent(rut)}`, {}, token),
 
-  /** GET /person/:rut - Get public personal data from NombreRutYFirma */
+  /** GET /person/:rut - Get public personal data from mock database */
   getPerson: (rut: string): Promise<PersonData> =>
     request<PersonData>(`/person/${encodeURIComponent(rut)}`),
 

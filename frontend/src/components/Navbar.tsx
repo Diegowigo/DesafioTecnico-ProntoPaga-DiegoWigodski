@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import styles from './Navbar.module.css';
 
@@ -12,19 +13,15 @@ export default function Navbar() {
     <header className={styles.header}>
       <div className={styles.inner}>
         {/* Logo */}
-        <Link href="/dashboard" className={styles.logo}>
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill="url(#logoGrad)" />
-            <path d="M8 20 L16 10 L24 20" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M12 20 L16 14 L20 20" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <defs>
-              <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32">
-                <stop stopColor="#3B82F6" />
-                <stop offset="1" stopColor="#06B6D4" />
-              </linearGradient>
-            </defs>
-          </svg>
-          <span className={styles.logoText}>ProntoPaga</span>
+        <Link href="/dashboard" className={styles.logo} aria-label="Ir a Inicio - ProntoPaga">
+          <Image
+            src="/logotipo-prontopaga.svg"
+            alt="ProntoPaga"
+            width={130}
+            height={26}
+            priority
+            className={styles.brandLogo}
+          />
           <span className={styles.logoSub}>Score</span>
         </Link>
 
@@ -37,7 +34,7 @@ export default function Navbar() {
               </div>
               <div className={styles.userDetails}>
                 <span className={styles.userName}>{user.name}</span>
-                <span className={`badge ${user.role === 'admin' ? 'badge-admin' : 'badge-user'}`}>
+                <span className={`badge ${user.role === 'admin' ? 'badge-admin' : 'badge-user'} ${styles.roleBadge}`}>
                   {user.role === 'admin' ? '⚡ Admin' : '👤 Usuario'}
                 </span>
               </div>

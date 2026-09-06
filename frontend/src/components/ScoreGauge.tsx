@@ -11,34 +11,33 @@ interface Props {
 
 export default function ScoreGauge({ score, animated = true }: Props) {
   const category = getScoreCategory(score);
-  const circleRef = useRef<SVGCircleElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
 
   const size = 220;
-  const cx = size / 2;
-  const cy = size / 2;
-  const r = 85;
+  const cx = 110;
+  const cy = 110;
+  const r = 80;
   const strokeWidth = 14;
 
-  // Arc spans 240 degrees (from 150° to 390°)
-  const totalArc = 240;
-  const circumference = 2 * Math.PI * r;
-  const arcLength = (totalArc / 360) * circumference;
-  const gap = circumference - arcLength;
-  const offset = circumference - (score / 100) * arcLength;
-
-  // Rotation so arc starts at bottom-left (150deg)
-  const rotation = 150;
+  // Arc path from 150° (near 0) clockwise over the top to 30°/390° (near 100)
+  const arcPath = 'M 40.72 150 A 80 80 0 1 1 179.28 150';
+  
+  // Total circumference for 240° arc of radius 80
+  const arcLength = (240 / 360) * 2 * Math.PI * r; // ~335.103
+  const clampScore = Math.max(0, Math.min(100, score));
+  const targetOffset = arcLength * (1 - clampScore / 100);
 
   useEffect(() => {
-    if (!animated || !circleRef.current) return;
-    // Reset and animate
-    circleRef.current.style.transition = 'none';
-    circleRef.current.style.strokeDashoffset = String(circumference - 0);
+    if (!animated || !pathRef.current) return;
+    // Reset to 0% filled
+    pathRef.current.style.transition = 'none';
+    pathRef.current.style.strokeDashoffset = String(arcLength);
     // Force reflow
-    void circleRef.current.getBoundingClientRect();
-    circleRef.current.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)';
-    circleRef.current.style.strokeDashoffset = String(offset);
-  }, [score, animated, circumference, offset]);
+    void pathRef.current.getBoundingClientRect();
+    // Animate smoothly to score percentage
+    pathRef.current.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1)';
+    pathRef.current.style.strokeDashoffset = String(targetOffset);
+  }, [score, animated, arcLength, targetOffset]);
 
   return (
     <div className={styles.wrapper}>
@@ -51,19 +50,12 @@ export default function ScoreGauge({ score, animated = true }: Props) {
         role="img"
       >
         <defs>
-          <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#EF4444" />
-            <stop offset="25%" stopColor="#F97316" />
-            <stop offset="50%" stopColor="#F59E0B" />
-            <stop offset="75%" stopColor="#22C55E" />
-            <stop offset="100%" stopColor="#06B6D4" />
+          <linearGradient id="scoreGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={category.color} stopOpacity="0.85" />
+            <stop offset="100%" stopColor={category.color} />
           </linearGradient>
-          <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={category.color} />
-            <stop offset="100%" stopColor={category.color} stopOpacity="0.7" />
-          </linearGradient>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
             <feMerge>
               <feMergeNode in="coloredBlur" />
               <feMergeNode in="SourceGraphic" />
@@ -71,41 +63,32 @@ export default function ScoreGauge({ score, animated = true }: Props) {
           </filter>
         </defs>
 
-        {/* Background track */}
-        <circle
-          cx={cx}
-          cy={cy}
-          r={r}
+        {/* Background track (full 240° empty arc) */}
+        <path
+          d={arcPath}
           fill="none"
-          stroke="rgba(255,255,255,0.06)"
+          stroke="rgba(255,255,255,0.08)"
           strokeWidth={strokeWidth}
-          strokeDasharray={`${arcLength} ${gap}`}
-          strokeDashoffset={0}
           strokeLinecap="round"
-          transform={`rotate(${rotation}, ${cx}, ${cy})`}
         />
 
-        {/* Score arc */}
-        <circle
-          ref={circleRef}
-          cx={cx}
-          cy={cy}
-          r={r}
+        {/* Dynamic score arc (fills from 0 up to score%) */}
+        <path
+          ref={pathRef}
+          d={arcPath}
           fill="none"
-          stroke={`url(#scoreGrad)`}
+          stroke="url(#scoreGrad)"
           strokeWidth={strokeWidth}
-          strokeDasharray={`${arcLength} ${gap}`}
-          strokeDashoffset={animated ? circumference : offset}
           strokeLinecap="round"
-          transform={`rotate(${rotation}, ${cx}, ${cy})`}
+          strokeDasharray={`${arcLength} ${arcLength}`}
+          strokeDashoffset={animated ? arcLength : targetOffset}
           filter="url(#glow)"
-          style={animated ? undefined : undefined}
         />
 
         {/* Center content */}
         <text
           x={cx}
-          y={cy - 14}
+          y={cy - 10}
           textAnchor="middle"
           fill={category.color}
           fontSize="48"
@@ -117,7 +100,7 @@ export default function ScoreGauge({ score, animated = true }: Props) {
         </text>
         <text
           x={cx}
-          y={cy + 14}
+          y={cy + 16}
           textAnchor="middle"
           fill="rgba(255,255,255,0.5)"
           fontSize="12"
@@ -128,23 +111,25 @@ export default function ScoreGauge({ score, animated = true }: Props) {
           DE 100
         </text>
 
-        {/* Min / Max labels */}
+        {/* Min / Max labels at the base of the arc */}
         <text
-          x={cx - r + 4}
-          y={cy + 52}
+          x={cx - r - 12}
+          y={cy + 54}
           textAnchor="middle"
-          fill="rgba(255,255,255,0.3)"
-          fontSize="10"
+          fill="rgba(255,255,255,0.4)"
+          fontSize="11"
+          fontWeight="600"
           fontFamily="Inter, sans-serif"
         >
           0
         </text>
         <text
-          x={cx + r - 4}
-          y={cy + 52}
+          x={cx + r + 16}
+          y={cy + 54}
           textAnchor="middle"
-          fill="rgba(255,255,255,0.3)"
-          fontSize="10"
+          fill="rgba(255,255,255,0.4)"
+          fontSize="11"
+          fontWeight="600"
           fontFamily="Inter, sans-serif"
         >
           100

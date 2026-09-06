@@ -1,54 +1,55 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import { validateRut, formatRutInput } from '@/utils/rut';
-import Toast, { useToast } from '@/components/Toast';
-import styles from './page.module.css';
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { validateRut, formatRutInput } from "@/utils/rut";
+import Toast, { useToast } from "@/components/Toast";
+import styles from "./page.module.css";
 
 interface QuickCred {
   label: string;
   rut?: string;
   username?: string;
   password: string;
-  role: 'user' | 'admin' | 'dynamic';
+  role: "user" | "admin" | "dynamic";
   description: string;
   color: string;
 }
 
 const QUICK_CREDENTIALS: QuickCred[] = [
   {
-    label: 'Juan Pérez',
-    rut: '11.111.111-1',
-    password: 'password123',
-    role: 'user',
-    description: 'Usuario estándar · Rol User',
-    color: '#3B82F6',
+    label: "Juan Pérez",
+    rut: "11.111.111-1",
+    password: "password123",
+    role: "user",
+    description: "Usuario estándar · Rol User",
+    color: "#FC2B5F",
   },
   {
-    label: 'María González',
-    rut: '22.222.222-2',
-    password: 'password123',
-    role: 'user',
-    description: 'Usuario estándar · Rol User',
-    color: '#8B5CF6',
+    label: "María González",
+    rut: "22.222.222-2",
+    password: "password123",
+    role: "user",
+    description: "Usuario estándar · Rol User",
+    color: "#8B5CF6",
   },
   {
-    label: 'Administrador',
-    rut: '99.999.999-9',
-    password: 'admin123',
-    role: 'admin',
-    description: 'Acceso total · Rol Admin',
-    color: '#F59E0B',
+    label: "Administrador",
+    rut: "99.999.999-9",
+    password: "admin123",
+    role: "admin",
+    description: "Acceso total · Rol Admin",
+    color: "#F59E0B",
   },
   {
-    label: 'Diego Wigodski',
-    rut: '17.702.728-6',
-    password: 'password123',
-    role: 'dynamic',
-    description: 'RUT dinámico · NombreRutYFirma',
-    color: '#10B981',
+    label: "Diego Wigodski",
+    rut: "17.702.728-6",
+    password: "password123",
+    role: "user",
+    description: "Usuario registrado · Rol User",
+    color: "#10B981",
   },
 ];
 
@@ -57,21 +58,21 @@ export default function LoginPage() {
   const router = useRouter();
   const { toasts, addToast, dismiss } = useToast();
 
-  const [form, setForm] = useState({ rut: '', password: '' });
+  const [form, setForm] = useState({ rut: "", password: "" });
   const [rutValid, setRutValid] = useState<boolean | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   // If already authenticated, redirect
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.replace('/dashboard');
+      router.replace("/dashboard");
     }
   }, [isAuthenticated, isLoading, router]);
 
   // Show auth error as toast
   useEffect(() => {
     if (error) {
-      addToast('error', 'Error de autenticación', error);
+      addToast("error", "Error de autenticación", error);
       clearError();
     }
   }, [error]);
@@ -89,11 +90,19 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.rut || !form.password) {
-      addToast('warning', 'Campos incompletos', 'Ingresa RUT y contraseña para continuar.');
+      addToast(
+        "warning",
+        "Campos incompletos",
+        "Ingresa RUT y contraseña para continuar.",
+      );
       return;
     }
     if (rutValid === false) {
-      addToast('error', 'RUT inválido', 'El dígito verificador no coincide. Revisa el formato.');
+      addToast(
+        "error",
+        "RUT inválido",
+        "El dígito verificador no coincide. Revisa el formato.",
+      );
       return;
     }
     setSubmitting(true);
@@ -114,7 +123,7 @@ export default function LoginPage() {
     <>
       <Toast toasts={toasts} onDismiss={dismiss} />
 
-      <div className="center-page" style={{ background: 'var(--bg-base)' }}>
+      <div className="center-page" style={{ background: "var(--bg-base)" }}>
         {/* Background decoration */}
         <div className={styles.bgOrb1} />
         <div className={styles.bgOrb2} />
@@ -122,20 +131,16 @@ export default function LoginPage() {
         <div className={styles.container}>
           {/* Header */}
           <div className={styles.header}>
-            <div className={styles.logoMark}>
-              <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="9" fill="url(#loginLogoGrad)" />
-                <path d="M8 21 L16 9 L24 21" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M12 21 L16 15 L20 21" stroke="rgba(255,255,255,0.55)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <defs>
-                  <linearGradient id="loginLogoGrad" x1="0" y1="0" x2="32" y2="32">
-                    <stop stopColor="#3B82F6" />
-                    <stop offset="1" stopColor="#06B6D4" />
-                  </linearGradient>
-                </defs>
-              </svg>
+            <div className={styles.logoContainer}>
+              <Image
+                src="/logotipo-prontopaga.svg"
+                alt="ProntoPaga"
+                width={170}
+                height={35}
+                priority
+                className={styles.loginLogo}
+              />
             </div>
-            <h1 className={styles.title}>ProntoPaga</h1>
             <p className={styles.subtitle}>Consulta de Riesgo Financiero</p>
           </div>
 
@@ -144,13 +149,15 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className={styles.form} noValidate>
               {/* RUT Field */}
               <div className="form-group">
-                <label htmlFor="rut-input" className="form-label">RUT</label>
+                <label htmlFor="rut-input" className="form-label">
+                  RUT
+                </label>
                 <div className={styles.inputWrapper}>
                   <input
                     id="rut-input"
                     type="text"
                     className={`form-input ${
-                      rutValid === null ? '' : rutValid ? 'valid' : 'error'
+                      rutValid === null ? "" : rutValid ? "valid" : "error"
                     }`}
                     placeholder="Ej: 11.111.111-1"
                     value={form.rut}
@@ -161,29 +168,39 @@ export default function LoginPage() {
                     aria-invalid={rutValid === false}
                   />
                   {rutValid !== null && (
-                    <span className={`${styles.validIcon} ${rutValid ? styles.green : styles.red}`}>
-                      {rutValid ? '✓' : '✗'}
+                    <span
+                      className={`${styles.validIcon} ${rutValid ? styles.green : styles.red}`}
+                    >
+                      {rutValid ? "✓" : "✗"}
                     </span>
                   )}
                 </div>
                 {rutValid === false && (
-                  <span className="form-error">⚠ Dígito verificador inválido</span>
+                  <span className="form-error">
+                    ⚠ Dígito verificador inválido
+                  </span>
                 )}
                 {rutValid === true && (
-                  <span style={{ fontSize: 12, color: 'var(--accent-green)' }}>✓ RUT válido</span>
+                  <span style={{ fontSize: 12, color: "var(--accent-green)" }}>
+                    ✓ RUT válido
+                  </span>
                 )}
               </div>
 
               {/* Password Field */}
               <div className="form-group">
-                <label htmlFor="password-input" className="form-label">Contraseña</label>
+                <label htmlFor="password-input" className="form-label">
+                  Contraseña
+                </label>
                 <input
                   id="password-input"
                   type="password"
                   className="form-input"
                   placeholder="Ingresa tu contraseña"
                   value={form.password}
-                  onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, password: e.target.value }))
+                  }
                   autoComplete="current-password"
                   aria-label="Contraseña"
                 />
@@ -203,7 +220,15 @@ export default function LoginPage() {
                   </>
                 ) : (
                   <>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    >
                       <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
                       <polyline points="10,17 15,12 10,7" />
                       <line x1="15" y1="12" x2="3" y2="12" />
@@ -221,21 +246,40 @@ export default function LoginPage() {
                 {QUICK_CREDENTIALS.map((cred) => (
                   <button
                     key={cred.label}
-                    id={`quick-login-${cred.label.toLowerCase().replace(/\s+/g, '-')}`}
+                    id={`quick-login-${cred.label.toLowerCase().replace(/\s+/g, "-")}`}
                     onClick={() => handleQuickLogin(cred)}
                     className={styles.quickCard}
                     disabled={submitting}
-                    style={{ '--cred-color': cred.color } as React.CSSProperties}
+                    style={
+                      { "--cred-color": cred.color } as React.CSSProperties
+                    }
                     title={`Iniciar sesión como ${cred.label}`}
                   >
-                    <div className={styles.quickAvatar} style={{ background: `${cred.color}20`, borderColor: `${cred.color}40`, color: cred.color }}>
+                    <div
+                      className={styles.quickAvatar}
+                      style={{
+                        background: `${cred.color}20`,
+                        borderColor: `${cred.color}40`,
+                        color: cred.color,
+                      }}
+                    >
                       {cred.label.charAt(0)}
                     </div>
                     <div className={styles.quickInfo}>
                       <span className={styles.quickName}>{cred.label}</span>
-                      <span className={styles.quickDesc}>{cred.description}</span>
+                      <span className={styles.quickDesc}>
+                        {cred.description}
+                      </span>
                     </div>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="rgba(255,255,255,0.3)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
                       <polyline points="9,18 15,12 9,6" />
                     </svg>
                   </button>
@@ -245,7 +289,7 @@ export default function LoginPage() {
           </div>
 
           <p className={styles.footer}>
-            Desafío Técnico · ProntoPaga · {new Date().getFullYear()}
+            Desafío Técnico · Diego Wigodski · {new Date().getFullYear()}
           </p>
         </div>
       </div>

@@ -1,37 +1,38 @@
 import { Request, Response, NextFunction } from 'express';
-import { nombrerutyfirmaService } from '../services/nombrerutyfirma.service';
-import { formatRut } from '../utils/rut.util';
-import { AppError } from '../middlewares/error.middleware';
+import { formatRut, cleanRut } from '../utils/rut.util';
+import { MOCK_USERS } from '../data/mockUsers';
 
 export class RutController {
   /**
-   * Consulta pública de datos asociados al RUT en NombreRutYFirma.
+   * Consulta pública de datos asociados al RUT en la base de usuarios mock.
    * GET /person/:rut
    */
   public async getPersonByRut(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { rut } = req.params;
-      const data = await nombrerutyfirmaService.fetchPersonByRut(rut);
+      const formattedRut = formatRut(rut);
+      const cleaned = cleanRut(rut);
 
-      if (!data) {
+      const mockUser = MOCK_USERS.find(
+        (u) => cleanRut(u.rut) === cleaned || (u.rut && formatRut(u.rut) === formattedRut)
+      );
+
+      if (mockUser) {
         res.status(200).json({
-          rut: formatRut(rut),
-          name: `Usuario ${formatRut(rut)}`,
-          found: false,
-          source: 'default'
+          rut: formattedRut,
+          name: mockUser.name,
+          role: mockUser.role,
+          found: true,
+          source: 'mock'
         });
         return;
       }
 
       res.status(200).json({
-        rut: data.rut,
-        name: data.name,
-        rawName: data.rawName,
-        sex: data.sex,
-        address: data.address,
-        city: data.city,
-        found: true,
-        source: 'nombrerutyfirma.com'
+        rut: formattedRut,
+        name: `Usuario ${formattedRut}`,
+        found: false,
+        source: 'mock'
       });
     } catch (error) {
       next(error);

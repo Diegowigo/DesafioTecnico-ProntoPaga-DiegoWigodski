@@ -13,7 +13,7 @@
   --bg-hover:       #1E2A3D;
 
   /* Brand & Accent */
-  --accent-primary:  #3B82F6;
+  --accent-primary:  #FC2B5F;
   --accent-cyan:     #06B6D4;
   --accent-green:    #10B981;
   --accent-amber:    #F59E0B;
@@ -22,11 +22,11 @@
   --accent-purple:   #8B5CF6;
 
   /* Gradients */
-  --gradient-brand:  linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+  --gradient-brand:  linear-gradient(135deg, #FC2B5F 0%, #FF5A82 100%);
   --gradient-success:linear-gradient(135deg, #10B981 0%, #06B6D4 100%);
   --gradient-danger: linear-gradient(135deg, #EF4444 0%, #F97316 100%);
   --gradient-warn:   linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
-  --gradient-bg:     linear-gradient(135deg, #080C14 0%, #0A1428 50%, #080C14 100%);
+  --gradient-bg:     linear-gradient(135deg, #080C14 0%, #140A10 50%, #080C14 100%);
 
   /* Text */
   --text-primary:    #F8FAFC;
@@ -37,15 +37,15 @@
   /* Borders */
   --border-subtle:   rgba(255,255,255,0.06);
   --border-default:  rgba(255,255,255,0.10);
-  --border-accent:   rgba(59,130,246,0.50);
-  --border-glow:     rgba(59,130,246,0.25);
+  --border-accent:   rgba(252,43,95,0.50);
+  --border-glow:     rgba(252,43,95,0.25);
 
   /* Shadows */
   --shadow-sm:       0 2px 8px rgba(0,0,0,0.4);
   --shadow-md:       0 4px 20px rgba(0,0,0,0.5);
   --shadow-lg:       0 8px 40px rgba(0,0,0,0.6);
-  --shadow-glow:     0 0 30px rgba(59,130,246,0.2);
-  --shadow-glow-sm:  0 0 15px rgba(59,130,246,0.15);
+  --shadow-glow:     0 0 30px rgba(252,43,95,0.25);
+  --shadow-glow-sm:  0 0 15px rgba(252,43,95,0.18);
 
   /* Radius */
   --radius-sm:   8px;
@@ -97,8 +97,8 @@ body {
   color: var(--text-primary);
   min-height: 100dvh;
   background-image:
-    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(59,130,246,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(6,182,212,0.05) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(252,43,95,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(252,43,95,0.04) 0%, transparent 60%);
   background-attachment: fixed;
 }
 
@@ -162,12 +162,13 @@ body {
 .btn-primary {
   background: var(--gradient-brand);
   color: #fff;
-  box-shadow: 0 4px 15px rgba(59,130,246,0.35);
+  box-shadow: 0 4px 18px rgba(252, 43, 95, 0.38);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(59,130,246,0.45);
+  background: linear-gradient(135deg, #FF3D6E 0%, #FF6B8F 100%);
+  box-shadow: 0 8px 25px rgba(252, 43, 95, 0.52);
 }
 
 .btn-primary:active {
@@ -259,7 +260,7 @@ body {
 
 .form-input:focus {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+  box-shadow: 0 0 0 3px rgba(252,43,95,0.18);
 }
 
 .form-input.error {
@@ -300,15 +301,15 @@ body {
 }
 
 .badge-admin {
-  background: rgba(139,92,246,0.2);
-  color: var(--accent-purple);
-  border: 1px solid rgba(139,92,246,0.35);
+  background: rgba(252,43,95,0.15);
+  color: #FC2B5F;
+  border: 1px solid rgba(252,43,95,0.35);
 }
 
 .badge-user {
-  background: rgba(59,130,246,0.15);
-  color: var(--accent-primary);
-  border: 1px solid rgba(59,130,246,0.3);
+  background: rgba(252,43,95,0.12);
+  color: #FC2B5F;
+  border: 1px solid rgba(252,43,95,0.25);
 }
 
 /* =====================================================
@@ -354,9 +355,10 @@ body {
 }
 
 /* =====================================================
-   ANIMATIONS
+   ANIMATIONS & KEYFRAMES
    ===================================================== */
 @keyframes spin {
+  from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
@@ -371,8 +373,8 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(59,130,246,0.2); }
-  50% { box-shadow: 0 0 30px rgba(59,130,246,0.4); }
+  0%, 100% { box-shadow: 0 0 15px rgba(252,43,95,0.2); }
+  50% { box-shadow: 0 0 30px rgba(252,43,95,0.4); }
 }
 
 @keyframes gauge-appear {
